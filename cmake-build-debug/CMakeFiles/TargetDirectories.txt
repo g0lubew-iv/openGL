@@ -1,0 +1,2 @@
+/home/one_eyed_john/Desktop/prog/c_projects/gl/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/one_eyed_john/Desktop/prog/c_projects/gl/cmake-build-debug/CMakeFiles/rebuild_cache.dir
