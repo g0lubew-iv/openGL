@@ -1,5 +1,5 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
 #include <iostream>
 
@@ -14,7 +14,7 @@ const char* fragment_shader_source =
         "#version 330 core\n"
         "out vec4 color;\n"
         "void main() {\n"
-        "   color = vec4(0.2, 0.8, 0.1, 1);\n"
+        "   color = vec4(1, 0.8, 0.1, 1);\n"
         "}\n\0";
 
 struct Vertex {
@@ -45,7 +45,7 @@ int main() {
 
     // attach buffer
     glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(Vertex));
-    
+
     // configure vertex attribute
     glEnableVertexArrayAttrib(vertex_array, 0);
     glVertexArrayAttribFormat(vertex_array, 0, 2, GL_FLOAT, false, 0);
