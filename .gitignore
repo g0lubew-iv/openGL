@@ -1,4 +1,4 @@
-/[Bb]uild
-/[Oo]ut
+/[Bb]uild/
+/[Oo]ut/
 
-/.idea
+/.idea/

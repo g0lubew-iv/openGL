@@ -1,11 +1,7 @@
-//
-// Created by asuka on 01.03.2023.
-//
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-# include <glad/glad.h>
-# include <GLFW/glfw3.h>
-
-# include <iostream>
+#include <iostream>
 
 const char* vertex_shader_source =
         "#version 330 core\n"
@@ -46,8 +42,10 @@ int main() {
 
     unsigned int vertex_array;
     glCreateVertexArrays(1, &vertex_array);
+
     // attach buffer
     glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(Vertex));
+    
     // configure vertex attribute
     glEnableVertexArrayAttrib(vertex_array, 0);
     glVertexArrayAttribFormat(vertex_array, 0, 2, GL_FLOAT, false, 0);
