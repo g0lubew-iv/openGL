@@ -8,6 +8,9 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_library(settings INTERFACE)
 target_compile_features(settings INTERFACE cxx_std_20)
 
+add_subdirectory(ext/gl_functions)
+target_link_libraries(settings INTERFACE gl_functions)
+
 add_subdirectory(ext/glfw)
 target_link_libraries(settings INTERFACE glfw)
 
