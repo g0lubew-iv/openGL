@@ -21,5 +21,10 @@ target_link_libraries(settings INTERFACE glm::glm)
 find_package(OpenGL REQUIRED)
 target_link_libraries(settings INTERFACE OpenGL::GL)
 
+add_subdirectory(lib)
+add_subdirectory(space)
+
 add_subdirectory(helloTriangle)
 add_subdirectory(shaders)
+add_subdirectory(rectangle)
+add_subdirectory(cube)
