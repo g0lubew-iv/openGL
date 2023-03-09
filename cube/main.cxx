@@ -19,48 +19,51 @@
 const char *vertex_shader_source =
         "#version 330 core\n"
         "layout (location = 0) in vec3 position;\n"
+        "layout (location = 1) in vec3 in_color;\n"
         "uniform mat4 mvp;\n"
+        "out vec3 color;\n"
         "void main() {\n"
         "   gl_Position = mvp * vec4(position, 1);\n"
+        "   color = in_color;\n"
         "}\0";
 
 const char *fragment_shader_source =
         "#version 330 core\n"
-        "out vec4 color;\n"
+        "in vec3 color;\n"
+        "out vec4 frag_color;\n"
         "void main() {\n"
-        "   color = vec4(1, 0.8, 0.1, 1);\n"
+        "   frag_color = vec4(color, 1);\n"
         "}\n\0";
 
 struct Vertex {
-    float x;
-    float y;
-    float z;
+    glm::vec3 pos;
+    glm::vec3 col;
 };
 
 Vertex vertices[] = {
-        {1.f,  1.f,  1.f},
-        {1.f,  -1.f, 1.f},
-        {-1.f, -1.f, 1.f},
-        {-1.f, 1.f,  1.f},
-        {1.f,  1.f,  -1.f},
-        {1.f,  -1.f, -1.f},
-        {-1.f, -1.f, -1.f},
-        {-1.f, 1.f,  -1.f},
+        {{1.f,  1.f,  1.f},  {1, 0, 0}},
+        {{1.f,  -1.f, 1.f},  {0, 1, 0}},
+        {{-1.f, -1.f, 1.f},  {0, 0, 1}},
+        {{-1.f, 1.f,  1.f},  {1, 0, 0}},
+        {{1.f,  1.f,  -1.f}, {0, 1, 0}},
+        {{1.f,  -1.f, -1.f}, {0, 0, 1}},
+        {{-1.f, -1.f, -1.f}, {1, 0, 0}},
+        {{-1.f, 1.f,  -1.f}, {0, 1, 0}},
 };
 
 unsigned int indices[] = {
-        0, 1, 2,
-        0, 2, 3,
-        4, 5, 1,
-        4, 1, 0,
-        7, 6, 5,
-        7, 5, 4,
-        7, 6, 2,
-        7, 2, 3,
+        0, 1, 3,
+        1, 2, 3,
+        0, 4, 5,
+        0, 5, 1,
+        4, 0, 7,
         7, 0, 3,
-        7, 4, 0,
-        6, 5, 1,
-        6, 1, 2,
+        3, 2, 7,
+        7, 2, 6,
+        1, 5, 2,
+        2, 5, 6,
+        5, 4, 6,
+        6, 4, 7,
 };
 
 const glm::ivec2 window_size = {900, 600};
@@ -88,13 +91,15 @@ int main() {
     unsigned int vertex_array;
     glCreateVertexArrays(1, &vertex_array);
 
-    // attach buffer
     glVertexArrayVertexBuffer(vertex_array, 0, vertex_buffer, 0, sizeof(Vertex));
-
-    // configure vertex attribute
     glEnableVertexArrayAttrib(vertex_array, 0);
     glVertexArrayAttribFormat(vertex_array, 0, 3, GL_FLOAT, false, 0);
     glVertexArrayAttribBinding(vertex_array, 0, 0);
+
+    glVertexArrayVertexBuffer(vertex_array, 1, vertex_buffer, sizeof(glm::vec3), sizeof(Vertex));
+    glEnableVertexArrayAttrib(vertex_array, 1);
+    glVertexArrayAttribFormat(vertex_array, 0, 3, GL_FLOAT, false, 0);
+    glVertexArrayAttribBinding(vertex_array, 1, 1);
 
     glVertexArrayElementBuffer(vertex_array, indices_buffer);
 
@@ -108,7 +113,13 @@ int main() {
             static_cast<float>(window_size.x) / static_cast<float>(window_size.y),
             0.1f, 100.f);
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+        glEnable(GL_FRONT);
+        glFrontFace(GL_CW);
+    glEnable(GL_MULTISAMPLE);
     glClearColor(0.f, 0.f, 0.f, 0.f);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     double last{0}, current{0}, duration{0};
 
@@ -120,7 +131,7 @@ int main() {
         auto time = static_cast<float>(glfwGetTime());
         camera.set_position(
                 glm::vec3(std::sin(time), std::sin(time),
-                          std::cos(time)) * glm::vec3(50, 20, 50));
+                          std::cos(time)) * glm::vec3(50, 50, 50));
         camera.look_at({0, 0, 0});
 
         while (duration > rate) {
@@ -128,7 +139,7 @@ int main() {
 
             glfwPollEvents();
 
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glUseProgram(program);
             glBindVertexArray(vertex_array);
 
