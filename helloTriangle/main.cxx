@@ -56,6 +56,7 @@ int main() {
     glVertexArrayAttribBinding(vertex_array, 0, 0);
 
     glClearColor(0.8f, 0.2f, 0.1f, 0.0f);
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT);
