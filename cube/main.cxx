@@ -5,12 +5,16 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include <glm/vec2.hpp>
+#include <model.hpp>
+#include <camera.hpp>
+
+#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <cmath>
 
 const char *vertex_shader_source =
         "#version 330 core\n"
@@ -59,7 +63,9 @@ unsigned int indices[] = {
         6, 1, 2,
 };
 
-glm::ivec2 window_size = {900, 600};
+const glm::ivec2 window_size = {900, 600};
+const double fps = 50.;
+double rate = 1. / fps;
 
 GLFWwindow *initialize_window();
 
@@ -92,17 +98,47 @@ int main() {
 
     glVertexArrayElementBuffer(vertex_array, indices_buffer);
 
-    glClearColor(0.8f, 0.2f, 0.1f, 0.0f);
+    int mvp_loc = glGetUniformLocation(program, "mvp");
+
+    auto model = Model();
+    model.set_size({10, 10, 10});
+    auto camera = Camera();
+    auto projection = glm::perspective(
+            glm::radians(45.f),
+            static_cast<float>(window_size.x) / static_cast<float>(window_size.y),
+            0.1f, 100.f);
+
+    glClearColor(0.f, 0.f, 0.f, 0.f);
+
+    double last{0}, current{0}, duration{0};
 
     while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
-        glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(program);
-        glBindVertexArray(vertex_array);
-        // glDrawArrays(GL_TRIANGLES, 0, 6); it use too much memory!
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-        glBindVertexArray(0);
-        glfwSwapBuffers(window);
+        last = current;
+        current = glfwGetTime();
+        duration += current - last;
+
+        auto time = static_cast<float>(glfwGetTime());
+        camera.set_position(
+                glm::vec3(std::sin(time), std::sin(time),
+                          std::cos(time)) * glm::vec3(50, 20, 50));
+        camera.look_at({0, 0, 0});
+
+        while (duration > rate) {
+            duration -= rate;
+
+            glfwPollEvents();
+
+            glClear(GL_COLOR_BUFFER_BIT);
+            glUseProgram(program);
+            glBindVertexArray(vertex_array);
+
+            auto mvp = projection * camera.get_view() * model.get_model();
+            glUniformMatrix4fv(mvp_loc, 1, false, glm::value_ptr(mvp));
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+            glBindVertexArray(0);
+
+            glfwSwapBuffers(window);
+        }
     }
 
     glDeleteVertexArrays(1, &vertex_array);
