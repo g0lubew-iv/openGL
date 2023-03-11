@@ -9,7 +9,7 @@
 snake::GLFWSystem::GLFWSystem() {
     if (!is_initialized()) {
         if (!glfwInit()) {
-            throw std::runtime_error("Failed ti initialize GLFW!");
+            throw std::runtime_error("Failed to initialize GLFW!");
         }
         is_initialized_ = true;
     }

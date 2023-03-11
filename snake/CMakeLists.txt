@@ -5,11 +5,13 @@ target_include_directories(snake PUBLIC include)
 
 set(SNAKE_PUBLIC_HEADERS
         include/glfw_system.hxx
+        include/snake.hxx
         include/window.hxx
 )
 
 set(SNAKE_SOURCES
         src/glfw_system.cxx
+        src/snake.cxx
         src/window.cxx
 )
 
