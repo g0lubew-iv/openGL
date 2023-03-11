@@ -45,8 +45,8 @@ unsigned int make_program();
 
 int main() {
 
-    int n = 8; // number of vertices
-    // std::cin >> n;
+    int n = 3; // number of vertices
+    std::cin >> n;
 
     if (n <= 2) {
         std::cout << "Incorrect number of vertices!\n";
@@ -56,14 +56,14 @@ int main() {
     Vertex vertices[n];
     unsigned int indices[3 * (n - 2)];
 
-    const auto angle = pi() * static_cast<float>((n - 2)) / static_cast<float>(n) / 2.f;
+    const auto angle = pi() * static_cast<float>((n - 2)) / static_cast<float>(n);
     unsigned int counter = 1;
     unsigned int index = 0;
 
     for (int i = 0; i < n; i++) {
 
-        vertices[i] = Vertex{radius * float(std::sin(pi() / float(n)) * std::cos(pi() - angle * float(i))),
-                             radius * float(std::sin(pi() / float(n)) * std::sin(pi() - angle * float(i))),
+        vertices[i] = Vertex{radius * float(std::sin(pi() / float(n)) * std::cos((pi() - angle) * float(i - 1))),
+                             radius * float(std::sin(pi() / float(n)) * std::sin((pi() - angle) * float(i - 1))),
         };
 
         if (i < (n - 2)) {
@@ -75,9 +75,9 @@ int main() {
         }
     }
 
-    for (int j = 0; j < n; j++) {
-        std::cout << vertices[j].x << " " << vertices[j].y << "\n";
-    }
+    /*for (int j = 0; j < 3 * (n - 2); j++) {
+        std::cout << indices[j] << " ";
+    }*/
 
     auto window = initialize_window();
 
@@ -113,7 +113,7 @@ int main() {
         glUseProgram(program);
         glBindVertexArray(vertex_array);
         // glDrawArrays(GL_TRIANGLES, 0, 6); it use too much memory!
-        glDrawElements(GL_TRIANGLES, n * 2, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, n * 3, GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0);
         glfwSwapBuffers(window);
     }
