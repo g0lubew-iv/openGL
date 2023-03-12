@@ -1,0 +1,3 @@
+add_executable(plato_solids octahedron.cxx)
+target_link_libraries(plato_solids settings)
+target_link_libraries(plato_solids lib)

@@ -79,6 +79,9 @@ int main() {
 
     unsigned int program = make_program();
 
+    int n = 6; // Number of faces of platonic solid
+    // "Tetrahedron (4); Hexahedron (6); Octahedron (8); Dodecahedron (12); Icosahedron (20);
+
     unsigned int vertex_buffer;
     glCreateBuffers(1, &vertex_buffer);
     glNamedBufferData(vertex_buffer, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -114,9 +117,9 @@ int main() {
             0.1f, 100.f);
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-        glEnable(GL_FRONT);
-        glFrontFace(GL_CW);
+//    glEnable(GL_CULL_FACE);
+//    glEnable(GL_FRONT);
+//    glFrontFace(GL_CW);
     glEnable(GL_MULTISAMPLE);
     glClearColor(0.f, 0.f, 0.f, 0.f);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -145,7 +148,7 @@ int main() {
 
             auto mvp = projection * camera.get_view() * model.get_model();
             glUniformMatrix4fv(mvp_loc, 1, false, glm::value_ptr(mvp));
-            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+            glDrawElements(GL_TRIANGLES, int(std::pow(n, 2)), GL_UNSIGNED_INT, nullptr);
             glBindVertexArray(0);
 
             glfwSwapBuffers(window);
